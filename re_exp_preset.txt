@@ -1,0 +1,8 @@
+torso
+.ctrl.torso.
+torso
+.torso.ctrl.
+l_arm
+.ctrl.l.arm.
+l_hand;l_arm
+.:FKIndexFinger2_L|.:FKIndexFinger1_L|.:FKIndexFinger3_L|.:FKMiddleFinger1_L|.:FKMiddleFinger2_L|.:FKMiddleFinger3_L|.:FKRingFinger1_L|.:FKPinkyFinger1_L|.:FKPinkyFinger2_L|.:FKPinkyFinger3_L|.:FKThumbFinger2_L|.:FKThumbFinger3_L|.:FKThumbFinger1_L;.:FKElbow_L|.:FKWrist_L|.:FKShoulder_L

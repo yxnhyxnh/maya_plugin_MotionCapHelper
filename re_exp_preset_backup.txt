@@ -1,0 +1,8 @@
+torso
+.ctrl.torso.
+torso
+.torso.ctrl.
+l_arm
+.ctrl.l.arm.
+r_arm
+.l.arm.ctrl.
