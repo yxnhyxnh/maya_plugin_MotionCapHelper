@@ -234,8 +234,12 @@ class MoCapHelperUI(QWidget):
     def on_re_expcreateLayerButtonClicked(self):
         actOnType = getReActOnType(self)
         childcheck = self.ui.re_childCheckBox.isChecked()
-        mocaphelperrecore.expCreateDisplayLayer(self.re_exp,self.re_name,self.re_prefix,self.re_caseCheck,childcheck = childcheck ,nodetype = actOnType)
+        mocaphelperutility.openUndoChunk()
+        try:
 
+            mocaphelperrecore.expCreateDisplayLayer(self.re_exp,self.re_name,self.re_prefix,self.re_caseCheck,childcheck = childcheck ,nodetype = actOnType)
+        finally:
+            mocaphelperutility.closeUndoChunk()
     def on_re_extractLayerInfoButtonClicked(self):
         mocaphelperrecore.extractLayerInfo(self)
 
@@ -460,40 +464,56 @@ class MoCapHelperUI(QWidget):
         mintime = self.arb_fromtime
         maxtime = self.arb_totime
         targetA = self.ui.arb_simpleBakeAEdit.text()
-        # obj = mocaphelperutility.getSelectedNodes()[0]
-        locA = mocaphelperarbcore.createLoc(targetA +"_loc")
-        mocaphelperarbcore.createParentConstraint(targetA,locA,False)
-        mocaphelperarbcore.bake(locA,mintime,maxtime,"all")
-        mocaphelperarbcore.deleteAllConstraint(locA)
-        self.ui.arb_simpleBakeBEdit.setText(locA[0])
+        mocaphelperutility.openUndoChunk()
+        try:
+            
+            # obj = mocaphelperutility.getSelectedNodes()[0]
+            locA = mocaphelperarbcore.createLoc(targetA +"_loc")
+            mocaphelperarbcore.createParentConstraint(targetA,locA,False)
+            mocaphelperarbcore.bake(locA,mintime,maxtime,"all")
+            mocaphelperarbcore.deleteAllConstraint(locA)
+            self.ui.arb_simpleBakeBEdit.setText(locA[0])
+
+        finally:
+            mocaphelperutility.closeUndoChunk()
+
 
 
     def on_arb_simpleBakeAToBButtonClicked(self):
         targetA = self.ui.arb_simpleBakeAEdit.text()
         targetB = self.ui.arb_simpleBakeBEdit.text()
         maintainoffset=self.ui.arb_maintainOffsetCheckBox.isChecked()
-        check = mocaphelperarbcore.checkConstraint(targetB)
-        if check != False:
-            raise Exception("obj B has constraint already!")
-        else:
-            mintime = self.arb_fromtime
-            maxtime = self.arb_totime
-            type = getArbType(self)
-            mocaphelperarbcore.bakeAtoB(targetA,targetB,mintime,maxtime,type,maintainoffset,smart = self.ui.arb_smartBakeCheckBox.isChecked())
+        mocaphelperutility.openUndoChunk()
+        try:
+            check = mocaphelperarbcore.checkConstraint(targetB)
+            if check != False:
+                raise Exception("obj B has constraint already!")
+            else:
+                mintime = self.arb_fromtime
+                maxtime = self.arb_totime
+                type = getArbType(self)
+                mocaphelperarbcore.bakeAtoB(targetA,targetB,mintime,maxtime,type,maintainoffset,smart = self.ui.arb_smartBakeCheckBox.isChecked())
+
+        finally:
+            mocaphelperutility.closeUndoChunk()
 
     def on_arb_simpleBakeBToAButtonClicked(self):
         targetA = self.ui.arb_simpleBakeAEdit.text()
         targetB = self.ui.arb_simpleBakeBEdit.text()
         maintainoffset=self.ui.arb_maintainOffsetCheckBox.isChecked()
-        check = mocaphelperarbcore.checkConstraint(targetA)
-        if check != False:
-            raise Exception("obj A has constraint already!")
-        else:
-            mintime = self.arb_fromtime
-            maxtime = self.arb_totime
-            type = getArbType(self)
-            mocaphelperarbcore.bakeAtoB(targetB,targetA,mintime,maxtime,type,maintainoffset,smart = self.ui.arb_smartBakeCheckBox.isChecked())
-
+        mocaphelperutility.openUndoChunk()
+        try:
+            check = mocaphelperarbcore.checkConstraint(targetA)
+            if check != False:
+                raise Exception("obj A has constraint already!")
+            else:
+                mintime = self.arb_fromtime
+                maxtime = self.arb_totime
+                type = getArbType(self)
+                mocaphelperarbcore.bakeAtoB(targetB,targetA,mintime,maxtime,type,maintainoffset,smart = self.ui.arb_smartBakeCheckBox.isChecked())
+        finally:
+            mocaphelperutility.closeUndoChunk()
+        
 
     def on_arb_fk2ikEndCtrlAssignButtonClicked(self):
         obj = mocaphelperutility.getSelectedNodes()[0]
@@ -520,57 +540,73 @@ class MoCapHelperUI(QWidget):
         ctrlref = self.ui.arb_fk2ikCtrlRefEdit.text()
         twist = self.ui.arb_fk2ikTwistEdit.text()
         twistref = self.ui.arb_fk2ikTwistRefEdit.text()
-        if mocaphelperutility.objExist(endctrl) == False:
-            endctrl = ""
-        if mocaphelperutility.objExist(ctrlref) == False:
-            ctrlref = ""
-        if mocaphelperutility.objExist(twist) == False:
-            twist = ""
-        if mocaphelperutility.objExist(twistref) == False:
-            twistref = ""
+        mocaphelperutility.openUndoChunk()
+        try:
+            if mocaphelperutility.objExist(endctrl) == False:
+                endctrl = ""
+            if mocaphelperutility.objExist(ctrlref) == False:
+                ctrlref = ""
+            if mocaphelperutility.objExist(twist) == False:
+                twist = ""
+            if mocaphelperutility.objExist(twistref) == False:
+                twistref = ""
 
-        check = mocaphelperarbcore.checkConstraint(endctrl)
-        if check != False:
-            raise Exception("endctrl has constraint already!")
-        if mocaphelperutility.objExist(twist) == True:
-            check = mocaphelperarbcore.checkConstraint(twist)
-        if check != False:
-            raise Exception("twist has constraint already!")
+            check = mocaphelperarbcore.checkConstraint(endctrl)
+            if check != False:
+                raise Exception("endctrl has constraint already!")
+            if mocaphelperutility.objExist(twist) == True:
+                check = mocaphelperarbcore.checkConstraint(twist)
+            if check != False:
+                raise Exception("twist has constraint already!")
 
-        if endctrl== "" or ctrlref =="":
-            raise Exception("endctrl or ctrlref not set or not exist")
-        else:
-            if twist == "" or twistref == "":
-
-                mocaphelperarbcore.bakeAtoB(ctrlref,endctrl,mintime,maxtime,"parent",maintainoffset,smartbake)
+            if endctrl== "" or ctrlref =="":
+                raise Exception("endctrl or ctrlref not set or not exist")
             else:
-                mocaphelperarbcore.bakeAtoB(ctrlref,endctrl,mintime,maxtime,"parent",maintainoffset,smartbake)
+                if twist == "" or twistref == "":
 
-                twistpos = mocaphelperutility.getWorldPos(twist)
-                twistrot = mocaphelperutility.getWorldRot(twist)
-                twistroo = mocaphelperutility.getRotOrder(twist)
-                twistloc = mocaphelperarbcore.createLoc("temp_twist_loc",twistpos,twistrot,twistroo)
-                mocaphelperarbcore.createParentConstraint(twistref,twistloc,True)
-                mocaphelperarbcore.createPointConstraint(twistloc,twist,False)
-                if smartbake:
-                    mocaphelperarbcore.smartbake(twist,mintime,maxtime,"point")
+                    mocaphelperarbcore.bakeAtoB(ctrlref,endctrl,mintime,maxtime,"parent",maintainoffset,smartbake)
                 else:
-                    mocaphelperarbcore.bake(twist,mintime,maxtime,"point")
-                    
-                mocaphelperutility.deleteObj(twistloc)
-                mocaphelperarbcore.deleteAllConstraint(twist)
+                    mocaphelperarbcore.bakeAtoB(ctrlref,endctrl,mintime,maxtime,"parent",maintainoffset,smartbake)
+
+                    twistpos = mocaphelperutility.getWorldPos(twist)
+                    twistrot = mocaphelperutility.getWorldRot(twist)
+                    twistroo = mocaphelperutility.getRotOrder(twist)
+                    twistloc = mocaphelperarbcore.createLoc("temp_twist_loc",twistpos,twistrot,twistroo)
+                    cons1 = mocaphelperarbcore.createParentConstraint(twistref,twistloc,True)
+                    cons2 = mocaphelperarbcore.createPointConstraint(twistloc,twist,False)
+                    if smartbake:
+                        mocaphelperarbcore.smartbake(twist,mintime,maxtime,"point")
+                    else:
+                        mocaphelperarbcore.bake(twist,mintime,maxtime,"point")
+                        
+                    mocaphelperutility.deleteObj(cons1)
+                    mocaphelperutility.deleteObj(cons2)
+                    mocaphelperutility.deleteObj(twistloc)
+
+        finally:
+            mocaphelperutility.closeUndoChunk()
 
     def on_arb_pinPosPinCurButtonClicked(self):
         mintime = self.arb_fromtime
         maxtime = self.arb_totime
-        objs = mocaphelperutility.getSelectedNodes()
-        mocaphelperarbcore.pinCurPos(objs,mintime,maxtime)
+        mocaphelperutility.openUndoChunk()
+        try:
+
+            objs = mocaphelperutility.getSelectedNodes()
+            mocaphelperarbcore.pinCurPos(objs,mintime,maxtime)
+        finally:
+            mocaphelperutility.closeUndoChunk()
 
     def on_arb_pinPosPinParentButtonClicked(self):
         mintime = self.arb_fromtime
         maxtime = self.arb_totime
-        objs = mocaphelperutility.getSelectedNodes()
-        mocaphelperarbcore.pinParentPos(objs,mintime,maxtime)
+        mocaphelperutility.openUndoChunk()
+        try:
+            objs = mocaphelperutility.getSelectedNodes()
+            mocaphelperarbcore.pinParentPos(objs,mintime,maxtime)
+        finally:
+            mocaphelperutility.closeUndoChunk()
+        
 
 
 def getArbType(obj):

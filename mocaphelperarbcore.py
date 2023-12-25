@@ -137,20 +137,20 @@ def stickyDelete(ui):
 def bakeAtoB(A,B,start,end,type,maintainoffset = False,smart = False):
     print("type == ",type)
     if type == "parent" or type == "all":
-        createParentConstraint(A,B,maintainoffset)
+        cons = createParentConstraint(A,B,maintainoffset)
     elif type == "point":
-        createPointConstraint(A,B,maintainoffset)
+        cons = createPointConstraint(A,B,maintainoffset)
     elif type == "orient":
-        createOrientConstraint(A,B,maintainoffset)
+        cons = createOrientConstraint(A,B,maintainoffset)
     elif type == "onlyscale":
-        createParentConstraint(A,B,maintainoffset)
+        cons = createParentConstraint(A,B,maintainoffset)
 
     if smart:
         smartbake(B,start,end,type)
     else:
         bake(B,start,end,type)
         
-    deleteAllConstraint(B)
+    mocaphelperutility.deleteObj(cons)
 
 
 def pinCurPos(objs,mintime,maxtime):
@@ -163,25 +163,22 @@ def pinCurPos(objs,mintime,maxtime):
         raise Exception("min == max.")
     
     
-    cmds.undoInfo(openChunk=True)
-    try:
-        cdlist = []
-        # cmds.currentTime(min)
-        for obj in objs:
+    cdlist = []
+    # cmds.currentTime(min)
+    for obj in objs:
 
-            pos = mocaphelperutility.getWorldPos(obj)
-            rot = mocaphelperutility.getWorldRot(obj)
-            cdlist.append([pos,rot])
-        for i in range(int(math.floor(min)),int(math.ceil(max)+1)):
+        pos = mocaphelperutility.getWorldPos(obj)
+        rot = mocaphelperutility.getWorldRot(obj)
+        cdlist.append([pos,rot])
+    for i in range(int(math.floor(min)),int(math.ceil(max)+1)):
 
-            cmds.currentTime(float(i))
-            cmds.setKeyframe(objs,at = ["tx","ty","tz","rx","ry","rz"])
-            for i in range(len(objs)):
-                pos = cdlist[i][0]
-                rot = cdlist[i][1]
-                cmds.xform(objs[i],ws = True,translation = pos,rotation = rot)
-    finally:
-        cmds.undoInfo(closeChunk=True)
+        cmds.currentTime(float(i))
+        cmds.setKeyframe(objs,at = ["tx","ty","tz","rx","ry","rz"])
+        for i in range(len(objs)):
+            pos = cdlist[i][0]
+            rot = cdlist[i][1]
+            cmds.xform(objs[i],ws = True,translation = pos,rotation = rot)
+
 
 def pinParentPos(objs,mintime,maxtime):
 
@@ -196,29 +193,25 @@ def pinParentPos(objs,mintime,maxtime):
     if min == max:
         raise Exception("min == max.")
     
-    cmds.undoInfo(openChunk=True)
 
-    try:
-        cmds.currentTime(min)
-        consobj = objs[:-1]
-        beconsobj = objs[-1]
+    # cmds.currentTime(min)
+    consobj = objs[:-1]
+    beconsobj = objs[-1]
 
-        pos = mocaphelperutility.getWorldPos(beconsobj)
-        rot = mocaphelperutility.getWorldRot(beconsobj)
-        roo = mocaphelperutility.getRotOrder(beconsobj)
-        loc = createLoc("mocaphelper_arb_pinparent_temp_loc",pos,rot,roo)[0]
-        createParentConstraint(consobj,loc,True)
-        bake(loc,min,max,type="parent")
+    pos = mocaphelperutility.getWorldPos(beconsobj)
+    rot = mocaphelperutility.getWorldRot(beconsobj)
+    roo = mocaphelperutility.getRotOrder(beconsobj)
+    loc = createLoc("mocaphelper_arb_pinparent_temp_loc",pos,rot,roo)[0]
+    createParentConstraint(consobj,loc,True)
+    bake(loc,min,max,type="parent")
 
 
 
-        for i in range(int(math.floor(min)),int(math.ceil(max)+1)):
+    for i in range(int(math.floor(min)),int(math.ceil(max)+1)):
 
-            cmds.currentTime(float(i))
-            cmds.setKeyframe(beconsobj,at = ["tx","ty","tz","rx","ry","rz"])
-            reposition(beconsobj,loc)
+        cmds.currentTime(float(i))
+        cmds.setKeyframe(beconsobj,at = ["tx","ty","tz","rx","ry","rz"])
+        reposition(beconsobj,loc)
 
-        mocaphelperutility.deleteObj(loc)
-        mocaphelperutility.selectNodes(beconsobj)
-    finally:
-        cmds.undoInfo(closeChunk=True)
+    mocaphelperutility.deleteObj(loc)
+    mocaphelperutility.selectNodes(beconsobj)

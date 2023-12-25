@@ -1,26 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
-author:crx
-
 this plugin is created for use with autodesk maya 2018+.
 (because it import pyside2 module,and i don't know in which version maya would update this.)
-
------------------------------
-HOW TO USE:
-smoothAniCurve is supposed to be used with graph editor in maya,and you must only create an unique one,because plugin uses 
-"cmds.animCurveEditor("graphEditor1GraphEd",query = True,areCurvesSelected = True)" to get anim curves.
-and you have to select keys or anim curves to use it.
-the rest arguments are pretty easy to understand.
-and,this core feature is not developed by me,i actually stole it from:https://blog.csdn.net/lulongfei172006/article/details/51493273/
-thank you,lulongfei172006.
-
-frameAlign is simple cmd that you set a refence obj to get "frame time list" first,and apply that list to any objs that you selected while pushing that button.
-it will set key on  "frame time list"  first,and delete other keys that are not in the list.
-
-mocaphelperui is accessable by cmds.moCapHelper.showUi()
-or use it with mel:moCapHelper.showUi;
-
-hope you enjoy it.
 
 '''
 

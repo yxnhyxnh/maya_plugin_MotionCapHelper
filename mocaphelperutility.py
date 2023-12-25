@@ -126,3 +126,9 @@ def unicodeToStr(str):
 def getDir():
     dir = os.path.dirname(__file__)
     return dir
+
+def openUndoChunk():
+    return cmds.undoInfo(openChunk=True)
+
+def closeUndoChunk():
+    return cmds.undoInfo(closeChunk=True)
