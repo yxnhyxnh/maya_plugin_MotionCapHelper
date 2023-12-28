@@ -9,5 +9,9 @@ animation rebuild:删除范围内外帧，偏移选中物体帧，手动提取�
 
 都是非常简单的功能，其中平滑曲线的代码来自https://blog.csdn.net/lulongfei172006/article/details/51493273/
 
+# support maya version:支持版本
+maya 2018+
+
+
 ![preview](./preview.PNG)
 ![preview](./preview1.PNG)

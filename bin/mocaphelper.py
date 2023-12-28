@@ -20,7 +20,7 @@ import PySide2.QtWidgets
 from PySide2 import QtCore
 
 
-version = 1.43
+version = 1.44
 ui = None
 
 translator = QtCore.QTranslator()

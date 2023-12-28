@@ -3,7 +3,7 @@
 
 
 import os
-import sys
+
 from mocaphelper import version
 import mocaphelperutility
 import mocaphelperrecore
@@ -21,7 +21,11 @@ from PySide2.QtUiTools import *
 from shiboken2 import wrapInstance 
 
 mayaMainWindowPtr = omui.MQtUtil.mainWindow() 
-mayaMainWindow = wrapInstance(long(mayaMainWindowPtr), QWidget) 
+pyVersion = mocaphelperutility.getPythonVersion()
+if pyVersion < 3:
+    mayaMainWindow = wrapInstance(long(mayaMainWindowPtr), QWidget) 
+else:
+    mayaMainWindow = wrapInstance(int(mayaMainWindowPtr), QWidget) 
 
 
 class MoCapHelperUI(QWidget):
@@ -335,6 +339,7 @@ class MoCapHelperUI(QWidget):
 
 
     def on_arb_toEditEdited(self):
+        print("setto:",eval(self.ui.arb_toEdit.text()))
         self.arb_totime = float(eval(self.ui.arb_toEdit.text()))
         # print("setto:",self.ui.arb_toEdit.text(),self.arb_totime)
 

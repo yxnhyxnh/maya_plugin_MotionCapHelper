@@ -9,12 +9,19 @@ import mocaphelperutility
 
 def retestlist(strlist,exp,casecheck = False):
     matchlist = []
-    if (type(exp)== unicode ):
-        raw_exp = repr(exp)[2:-1]
-    elif (type(exp)== str ):
-        raw_exp = exp
+    pyVersion = mocaphelperutility.getPythonVersion()
+    if pyVersion < 3:
+
+        if (type(exp)== unicode ):
+            raw_exp = repr(exp)[2:-1]
+        elif (type(exp)== str ):
+            raw_exp = exp
+        else:
+            raise Exception("unidentified string format input!")
+        
     else:
-        raise Exception("unidentified string format input!")
+        raw_exp = exp
+
     print("convert---"+exp+"---to---"+raw_exp)
     for longname in strlist:
         shortname = longname2shortname(longname)[0]

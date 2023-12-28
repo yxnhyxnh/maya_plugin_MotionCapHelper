@@ -4,6 +4,11 @@ import maya.mel as mel
 
 import os
 
+from sys import version as sysver
+
+def getPythonVersion():
+    return int(sysver[0])
+
 
 def selectNodes(nodelist,visible = False):
     cmds.select(cl=True)
