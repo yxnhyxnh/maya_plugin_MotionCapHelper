@@ -8,17 +8,26 @@ from mocaphelper import version
 import mocaphelperutility
 import mocaphelperrecore
 import mocaphelperarbcore
+from mocaphelpersaccore import updatedsmoothanimcurve
 
 
 from maya import cmds
 from maya import mel
 from maya import OpenMayaUI as omui 
 
-from PySide2.QtCore import * 
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from PySide2.QtUiTools import *
-from shiboken2 import wrapInstance 
+try:
+    from PySide2.QtCore import * 
+    from PySide2.QtGui import *
+    from PySide2.QtWidgets import *
+    from PySide2.QtUiTools import *
+    from shiboken2 import wrapInstance 
+except ImportError:
+    from PySide6.QtCore import * 
+    from PySide6.QtGui import *
+    from PySide6.QtWidgets import *
+    from PySide6.QtUiTools import *
+    from shiboken6 import wrapInstance 
+
 
 mayaMainWindowPtr = omui.MQtUtil.mainWindow() 
 pyVersion = mocaphelperutility.getPythonVersion()
@@ -87,8 +96,12 @@ class MoCapHelperUI(QWidget):
         self.ui.sac_inEdit.textEdited.connect(self.on_sac_inEditEdited)
         self.ui.sac_utCheckBox.stateChanged.connect(self.on_sac_utCheckBoxChanged)
         self.ui.sac_tuEdit.textEdited.connect(self.on_sac_tuEditEdited)
-        self.ui.sac_selTypeComboBox.activated[str].connect(self.on_sac_selTypeComboBoxChanged)
-        self.ui.sac_smoothMethodComboBox.activated[str].connect(self.on_sac_smoothMethodComboBoxChanged)
+        try:
+            self.ui.sac_selTypeComboBox.activated[str].connect(self.on_sac_selTypeComboBoxChanged)
+            self.ui.sac_smoothMethodComboBox.activated[str].connect(self.on_sac_smoothMethodComboBoxChanged)
+        except:
+            self.ui.sac_selTypeComboBox.currentTextChanged[str].connect(self.on_sac_selTypeComboBoxChanged)
+            self.ui.sac_smoothMethodComboBox.currentTextChanged[str].connect(self.on_sac_smoothMethodComboBoxChanged)
         self.ui.sac_cmdButton.clicked.connect(self.on_sac_cmdButtonClicked)
 
     def on_sac_itEditEdited(self):
@@ -115,8 +128,10 @@ class MoCapHelperUI(QWidget):
         if self.sac_selType == 'selected keys' :
             seltype = 1
 
-        cmds.moCapHelper_smoothAniCurve( method = self.sac_method , i = self.sac_iteration , intensity = self.sac_intensity , sel = seltype , u = self.sac_useTime , tu = self.sac_timeUnit )
 
+        # cmds.moCapHelper_smoothAniCurve( method = self.sac_method , i = self.sac_iteration , intensity = self.sac_intensity , sel = seltype , u = self.sac_useTime , tu = self.sac_timeUnit )
+
+        updatedsmoothanimcurve(self.sac_method ,self.sac_iteration ,self.sac_intensity , seltype , self.sac_useTime , self.sac_timeUnit )
 
 
     #fa:

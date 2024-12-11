@@ -15,12 +15,17 @@ import mocaphelpersaccore
 import mocaphelperfacore
 import mocaphelperutility
 
-import PySide2.QtWidgets
+try:
+	from PySide2 import QtWidgets
 
-from PySide2 import QtCore
+	from PySide2 import QtCore
+except ImportError:
+	from PySide6 import QtWidgets
+
+	from PySide6 import QtCore
 
 
-version = 1.44
+version = 1.50
 ui = None
 
 translator = QtCore.QTranslator()
@@ -151,7 +156,7 @@ class openui(om.MPxCommand):
 			print("closing ui:--------",ui.destroy(True,True))
 
 		
-		app = PySide2.QtWidgets.QApplication.instance()
+		app = QtWidgets.QApplication.instance()
 
 		app.installTranslator(translator)
 		dir = mocaphelperutility.getDir()
